@@ -21,6 +21,36 @@ public class MemberService {
 		List<UserDTO> list = userDAO.findAll(conn);
 		return list;
 	}
-	
-	
+
+	public int insertUser(UserDTO user) {
+		Connection conn = JdbcUtil.getConnection();			
+		return userDAO.insertUser(user, conn);
+	}
+
+	public List<UserDTO> findUserNo(int userNo) {
+		Connection conn = JdbcUtil.getConnection();	
+		List<UserDTO> list = userDAO.findUserNo(userNo, conn);
+		return list;
+	}
+
+	public List<UserDTO> findUserId(String userId) {
+		Connection conn = JdbcUtil.getConnection();
+		List<UserDTO> list = userDAO.findUserId(userId, conn);
+		return list;
+	}
+
+	public int updateUserPw(String userId, String userPw, String userNewPw) {
+		Connection conn = JdbcUtil.getConnection();
+		return userDAO.updateUserPw(userId, userPw, userNewPw, conn);
+	}
+
+	public int deleteUser(String userId, String userPw) {
+		Connection conn = JdbcUtil.getConnection();
+		return userDAO.deleteUser(userId, userPw, conn);
+	}
+
+	public int deleteUserAd(int userNo, String userId) {
+		Connection conn = JdbcUtil.getConnection();
+		return userDAO.deleteUserAd(userNo, userId, conn);
+	}
 }

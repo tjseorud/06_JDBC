@@ -1,7 +1,6 @@
 package com.kh.mvc.model.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.kh.mvc.model.dto.UserDTO;
+import com.kh.mvc.util.JdbcUtil;
 
 /**DAO(Date Access Object)
  * 데어터베이스 관련된 작업(CRUD)을 전문적으로 담당하는 객체
@@ -47,8 +47,7 @@ public class UserDAO {
 	 */
 	static {
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			
+			Class.forName("oracle.jdbc.driver.OracleDriver");		
 		} catch (ClassNotFoundException e) {
 			System.out.println("OracleDriver가 없을수도?");
 		}	
@@ -89,31 +88,16 @@ public class UserDAO {
 		} catch (SQLException e) {
 			System.out.println("오타가 있을수도?");
 		} finally {
-			try {
-				if(rset != null) rset.close();
-			} catch (SQLException e) {
-				System.out.println("DB?");
-			}
-			try {
-				if(pstmt != null) pstmt.close();
-			} catch (SQLException e) {
-				System.out.println("PreparedStatement?");
-			}
-			try {
-				if(conn != null) conn.close();
-			} catch (SQLException e) {
-				System.out.println("Connection?");
-			}
+			JdbcUtil.closeAll(rset, pstmt, conn);
 		}		
 		return list;
 	}
 	
 	/**
-	 * @param user 사용자가 입력한 ID / PW / NAME이 각각 칠드에 대입되어있음
+	 * @param user 사용자가 입력한 ID / PW / NAME이 각각 필드에 대입되어있음
 	 * @return
 	 */
-	public int insertUser(UserDTO user) {
-		Connection conn = null;
+	public int insertUser(UserDTO user, Connection conn) {
 		PreparedStatement pstmt = null;
 		String sql ="""
 				INSERT INTO TB_USER
@@ -131,13 +115,155 @@ public class UserDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	finally {
-			try {
-				if(pstmt != null && !(pstmt.isClosed())) pstmt.close();
-				if(conn != null) conn.close();		
-			} catch (Exception e) {
-				e.printStackTrace();				
-			}
-		}
+			JdbcUtil.close(pstmt, conn);
+		}	
 		return result;
 	}
+
+	/**
+	 * @param userNo 사용자가 입력한 NO가 필드에 대입되어있음
+	 * @return
+	 */
+	public List<UserDTO> findUserNo(int userNo, Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;	
+		String sql ="""
+				SELECT USER_ID, USER_NAME, ENROLL_DATE
+				FROM TB_USER
+				WHERE USER_NO = ?
+				""";		
+		List<UserDTO> list = new ArrayList<UserDTO>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userNo);	
+			rset = pstmt.executeQuery();
+			
+			while (rset.next()) {
+				UserDTO userDTO = new UserDTO();
+				userDTO.setUserId(rset.getString("USER_ID"));
+				userDTO.setUserName(rset.getString("USER_NAME"));
+				userDTO.setEnrollDate(rset.getDate("ENROLL_DATE"));
+				
+				list.add(userDTO);
+			}			
+		} catch (SQLException e) {
+			e.printStackTrace();			
+		} finally {
+			JdbcUtil.closeAll(rset, pstmt, conn);
+		}	
+		return list;
+	}
+
+	/**
+	 * @param userId 사용자가 입력한 ID가 필드에 대입되어있음
+	 * @return
+	 */
+	public List<UserDTO> findUserId(String userId, Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		String sql ="""
+				SELECT USER_NAME, ENROLL_DATE
+				FROM TB_USER
+				WHERE USER_ID = ?
+				""";
+		List<UserDTO> list = new ArrayList<UserDTO>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userId);
+			rset =pstmt.executeQuery();
+			
+			while (rset.next()) {
+				UserDTO userDTO = new UserDTO();
+				userDTO.setUserName(rset.getString("USER_NAME"));
+				userDTO.setEnrollDate(rset.getDate("ENROLL_DATE"));
+				
+				list.add(userDTO);
+			}
+		} catch (SQLException e) {		
+			System.out.println("이건가?");
+		}	finally {
+			JdbcUtil.closeAll(rset, pstmt, conn);
+		}		
+		return list;
+	}
+
+	/**
+	 * @param userId 	사용자 아이디
+	 * @param userPw	사용자 현재 비밀번호
+	 * @param userNewPw	새 비밀번호
+	 * @return
+	 */
+	public int updateUserPw(String userId, String userPw, String userNewPw, Connection conn) {
+		PreparedStatement pstmt = null;
+		String sql = """
+				UPDATE TB_USER SET USER_PW = ?
+				WHERE USER_ID = ? AND USER_PW = ?
+				""";
+		int result = 0;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userNewPw);
+			pstmt.setString(2, userId);
+			pstmt.setString(3, userPw);
+			result = pstmt.executeUpdate();					
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	finally {
+			JdbcUtil.close(pstmt, conn);
+		}	
+		return result;
+	}
+
+	/**
+	 * 사용자 본인일 경우
+	 * @param userId	사용자 아이디
+	 * @param userPw	사용자 비밀번호
+	 * @return
+	 */
+	public int deleteUser(String userId, String userPw, Connection conn) {
+		PreparedStatement pstmt = null;
+		String sql ="""
+				DELETE FROM TB_USER
+				WHERE USER_ID = ? AND USER_PW = ?
+				""";
+		int result = 0;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userPw);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(pstmt, conn);
+		}	
+		return result;
+	}
+
+	/**
+	 * 관리자일 경우
+	 * @param userNo 사용자 번호
+	 * @param userId 사용자 아이디
+	 * @return
+	 */
+	public int deleteUserAd(int userNo, String userId, Connection conn) {
+		PreparedStatement pstmt = null;
+		String sql ="""
+				DELETE FROM TB_USER
+				WHERE USER_NO = ? AND USER_ID = ?
+				""";
+		int result = 0;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userNo);
+			pstmt.setString(2, userId);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(pstmt, conn);
+		}	
+		return result;
+	}
+	
 }

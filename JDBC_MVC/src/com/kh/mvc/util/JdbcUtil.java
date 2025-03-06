@@ -2,6 +2,7 @@ package com.kh.mvc.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -23,11 +24,34 @@ public class JdbcUtil {
 		return conn;
 	}
 	
-	public static void close(Statement stmt) {
+	public static void closeAll(ResultSet rset, Statement stmt, Connection conn) {
 		try {
-			if(stmt != null)	stmt.close();
+			if(rset != null) rset.close();
+		} catch (SQLException e) {
+			System.out.println("DB?");
+		}
+		try {
+			if(stmt != null && !(stmt.isClosed())) stmt.close();
 		} catch (SQLException e) {
 			System.out.println("PreparedStatement?");
-		}	
+		}
+		try {
+			if(conn != null) conn.close();
+		} catch (SQLException e) {
+			System.out.println("Connection?");
+		}
+	}
+
+	public static void close(Statement stmt, Connection conn) {		
+		try {
+			if(stmt != null && !(stmt.isClosed())) stmt.close();
+		} catch (SQLException e) {
+			System.out.println("PreparedStatement?");
+		}
+		try {
+			if(conn != null) conn.close();
+		} catch (SQLException e) {
+			System.out.println("Connection?");
+		}
 	}
 }
