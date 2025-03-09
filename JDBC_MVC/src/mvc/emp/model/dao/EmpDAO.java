@@ -68,11 +68,46 @@ public class EmpDAO {
 			pstmt.setLong(8, emp.getSalary());
 			pstmt.setString(9, emp.getManagerId());
 			result = pstmt.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("SQL?");
 		}
 		return result;
 	}
-	
-	
+
+	public int updateEmp(String empId, String dCode, Connection conn) {
+		PreparedStatement pstmt = null;
+		String sql = """
+				UPDATE EMPLOYEE 
+					SET DEPT_CODE = ?
+				WHERE EMP_ID = ?
+				""";
+		int result = 0;
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, dCode);
+			pstmt.setString(2, empId);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("SQL?");
+		}
+		return result;
+	}
+
+	public int deleteEmp(String empId, Connection conn) {
+		PreparedStatement pstmt = null;
+		String sql = """
+				DELETE FROM EMPLOYEE 
+				WHERE EMP_ID = ?
+				""";
+		int result = 0;
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, empId);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("SQL?");
+		}
+		return result;
+	}
+
 }

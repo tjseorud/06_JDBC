@@ -27,4 +27,11 @@ public class EmpController {
 		return service.insertEmp(emp);
 	}
 
+	public int updateEmp(String empId, String dCode) {
+		return service.updateEmp(empId, dCode);
+	}
+
+	public int deleteEmp(String empId) {
+		return service.deleteEmp(empId);
+	}
 }

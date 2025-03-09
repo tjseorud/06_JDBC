@@ -87,8 +87,9 @@ public class EmpView {
 			System.out.print("급여등급을 입력하세요 >>");
 			String sLevel = sc.nextLine();
 			System.out.print("급여를 입력하세요 >>");
+			long salary = 0;
 			try {
-				long salary = sc.nextLong();				
+				salary = sc.nextLong();				
 			} catch (InputMismatchException e) {
 				System.out.println(">숫자만 입력하세요");
 				sc.nextLine();
@@ -99,16 +100,42 @@ public class EmpView {
 			String managerId = sc.nextLine();
 			
 			int result = controller.insertEmp(empName, empNo, email, phone, dCode, jCode, sLevel, salary, managerId);
+			
+			if(result >0) {
+				System.out.println("\n등록 되었습니다");
+			} else {
+				System.out.println("\n등록 실패");
+			}
 		}
 	}
 
 	private void updateEmp() {
 		System.out.println("\n== 사원정보 수정하기 ==");
 		System.out.print("사원번호를 입력하세요 >>");
+		String empId = sc.nextLine();
+		System.out.print("수정할 사원의 부서코드를 입력하세요 >>");
+		String dCode = sc.nextLine();
+
+		int result = controller.updateEmp(empId, dCode);
+		
+		if(result >0) {
+			System.out.println("\n"+empId+" 사원이 수정 되었습니다");
+		} else {
+			System.out.println("\n수정 실패");
+		}
 	}
 
 	private void deleteEmp() {
 		System.out.println("\n== 사원 삭제하기 ==");
 		System.out.print("사원번호를 입력하세요 >>");
+		String empId = sc.nextLine();
+
+		int result = controller.deleteEmp(empId);
+		
+		if(result >0) {
+			System.out.println("\n"+empId+" 사원이 삭제 되었습니다");
+		} else {
+			System.out.println("\n삭제 실패");
+		}
 	}
 }

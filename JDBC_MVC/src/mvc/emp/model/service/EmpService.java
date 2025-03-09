@@ -21,4 +21,13 @@ public class EmpService {
 		return empDAO.insertEmp(emp, conn);
 	}
 
+	public int updateEmp(String empId, String dCode) {
+		Connection conn = JdbcUtil.getConnection();
+		return empDAO.updateEmp(empId, dCode, conn);
+	}
+
+	public int deleteEmp(String empId) {
+		Connection conn = JdbcUtil.getConnection();
+		return empDAO.deleteEmp(empId, conn);
+	}
 }
