@@ -52,7 +52,7 @@ public class UserDAO {
 			System.out.println("OracleDriver가 없을수도?");
 		}	
 	}	
-//	private final String URL = "jdbc:oracle:thin:@112.221.156.34:12345:XE";
+//	private final String URL = "jdbc:oracle:thin:@127.0.0.1:12345:XE";
 //	private final String USERNAME = "KH14_SDK";
 //	private final String PASSWORD = "KH1234";
 	
