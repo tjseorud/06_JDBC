@@ -9,7 +9,7 @@ public class JDBCExample5 {
 	public static void main(String[] args) throws ClassNotFoundException {
 		/*아이디, 비밀번호, 새비밀번호를 입력받아
 		 * 아이디,비밀번호가 일치하는 회원의 비밀번호 변경*/
-		String url ="jdbc:oracle:thin:@112.221.156.34:12345:XE";	//학원 DB 서버 URL
+		String url ="jdbc:oracle:thin:@127.0.0.1:12345:XE";	//학원 DB 서버 URL
 		String userName ="KH14_SDK";	//사용자 계정명
 		String password ="KH1234";		//계정 비밀번호
 		String sql ="""
