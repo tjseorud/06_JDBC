@@ -15,7 +15,7 @@ public class JDBCExample6 {
 		 *   ->'N' 삭제 취소(rollback) 	->"취소되었습니다" */
 		
 		//DB 연결을 위한 url, userName, password
-		String url ="jdbc:oracle:thin:@127.0.0.1:12345:XE";	//학원 DB 서버 URL
+		String url ="jdbc:oracle:thin:@192.168.130.17:1521:XE";	//학원 DB 서버 URL
 		String userName ="KH14_SDK";	//사용자 계정명
 		String password ="KH1234";		//계정 비밀번호
 		
