@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class JdbcUtil {
 	public static Connection getConnection() {
-		final String URL = "jdbc:oracle:thin:@127.0.0.1:12345:XE";
+		final String URL = "jdbc:oracle:thin:@192.168.130.17:1521:XE";
 		final String USERNAME = "KH14_SDK";
 		final String PASSWORD = "KH1234";		
 		Connection conn = null;
