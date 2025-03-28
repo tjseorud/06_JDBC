@@ -18,8 +18,8 @@ public class JDBCExample3 {
 		try {
 			Class.forName("oracle.jdbc.OracleDriver");
 			String type ="jdbc:oracle:thin:@";
-			String host ="127.0.0.1";
-			String port =":12345";
+			String host ="192.168.130.17";
+			String port =":1521";
 			String dbName =":XE";
 			String userName ="KH14_SDK";
 			String password ="KH1234";
