@@ -49,8 +49,8 @@ public class JDBCExample1 {
 			
 			/*2-2. DB 연결 정보 작성*/
 			String type ="jdbc:oracle:thin:@";
-			String host ="127.0.0.1";
-			String port =":12345";
+			String host ="192.168.130.17";
+			String port =":1521";
 			String dbName =":XE";
 			String userName ="KH14_SDK";
 			String password ="KH1234";			
